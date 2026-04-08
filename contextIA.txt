@@ -1,0 +1,501 @@
+================================================================
+  PetWell — EHR Service (Electronic Health Record Service)
+  Versión: 5.0.0 | Puerto: 3004
+================================================================
+
+## DESCRIPCIÓN DEL SERVICIO
+
+Microservicio responsable de gestionar el historial clínico electrónico
+de las mascotas dentro de la plataforma PetWell. Es un servicio
+completamente independiente: NO almacena datos en el Pet Service.
+
+Forma parte del ecosistema PetWell:
+  - API Gateway      → puerto 3001 (entrada centralizada)
+  - Pet Service      → puerto 3002 (mascotas y dueños)
+  - User Service     → puerto 3003 (usuarios y clínicas)
+  - EHR Service      → puerto 3004 (este servicio)
+
+================================================================
+## MODELO DE DATOS — ehr_records
+================================================================
+
+Campo            | Tipo        | Nota
+-----------------|-------------|-------------------------------
+id               | UUID PK     | Generado automáticamente
+pet_id           | UUID        | Referencia a pets (Pet Service)
+clinic_id        | UUID        | Siempre del JWT --- nunca del body
+veterinarian_id  | UUID?       | Usuario veterinario opcional
+visit_date       | DATE        | Obligatorio
+reason           | TEXT        | Motivo de consulta
+anamnesis        | TEXT        | Historia clínica
+diagnosis        | TEXT        | Diagnóstico
+treatment        | TEXT        | Tratamiento
+prescriptions    | TEXT        | Recetas médicas
+lab_results      | TEXT        | Resultados de laboratorio
+notes            | TEXT        | Observaciones adicionales
+created_at       | TIMESTAMPTZ | Automático
+updated_at       | TIMESTAMPTZ | Trigger automático
+
+================================================================
+## MODELO DE DATOS v2 --- ehr_permissions
+================================================================
+
+Campo            | Tipo        | Nota
+-----------------|-------------|-------------------------------
+id               | UUID PK     | Generado automáticamente
+pet_id           | UUID        | Mascota para la que se otorga acceso
+clinic_id        | UUID        | Clínica autorizada
+granted_by       | UUID        | user_id del OWNER que otorgó el permiso
+granted_at       | TIMESTAMPTZ | Automático
+
+Restricción: índice único en (pet_id, clinic_id) -- una clínica solo puede
+tener UN permiso por mascota.
+
+================================================================
+## MODELO DE DATOS v3 --- ehr_audit_logs
+================================================================
+
+Campo            | Tipo        | Nota
+-----------------|-------------|-------------------------------
+id               | UUID PK     | Generado automáticamente
+ehr_id           | UUID?       | Registro médico afectado (NULL para listas)
+pet_id           | UUID?       | Mascota afectada
+action           | VARCHAR(20) | CREATE | VIEW | UPDATE | DELETE
+actor_id         | UUID        | user_id del actor  ← columna real (no performed_by)
+role             | VARCHAR(50) | OWNER | CLINIC | VETERINARIAN
+clinic_id        | UUID?       | clinic_id del actor (NULL para OWNER)
+created_at       | TIMESTAMPTZ | Automático
+
+================================================================
+## MODELO DE DATOS v4 --- vaccinations
+================================================================
+
+Campo            | Tipo        | Nota
+-----------------|-------------|-------------------------------
+id               | UUID PK     | Generado automáticamente
+pet_id           | UUID        | Mascota vacunada
+clinic_id        | UUID        | Clínica que aplica
+veterinarian_id  | UUID        | Veterinario que aplica
+vaccine_name     | VARCHAR(100)| Nombre de la vacuna
+application_date | DATE        | Fecha de aplicación
+next_due_date    | DATE?       | Fecha de refuerzo
+batch_number     | VARCHAR(50) | Lote
+notes            | TEXT        | Observaciones
+created_at       | TIMESTAMPTZ | Automático
+
+================================================================
+## ARQUITECTURA
+================================================================
+
+Patrón: Controller → Service → Repository
+
+src/
+├── config/
+│   ├── env.ts            Variables de entorno tipadas
+│   └── supabase.ts       Cliente Supabase (service role)
+├── controllers/
+│   ├── ehr.controller.ts        Manejo HTTP EHR principal
+│   ├── permission.controller.ts Consentimiento entre clínicas
+│   ├── audit.controller.ts      Historial de auditoría
+│   ├── vaccination.controller.ts  Vacunas (nuevo v5)
+│   ├── pdf.controller.ts        Exportación de historial en PDF (nuevo v6)
+
+================================================================
+## ROLES Y PERMISOS
+================================================================
+
+- DUENO_MASCOTA:
+  * Puede consultar el historial clínico (EHR) y vacunas de SUS mascotas limitadas por relacionalidad (pet_owners en Pet Service / validación JWT).
+  * Puede descargar el PDF resumido del historial.
+  * No puede realizar cambios médicos (ej. asentar un diagóstico o registrar vacuna).
+
+- VETERINARIO:
+  * Puede leer todo el historial siempre que interactúe bajo una clínica.
+  * Único rol habilitado desde Agenda Front-End para "Registrar Vacuna".
+  * Puede descargar PDF para adjuntar o compartir.
+
+- CLINIC_ADMIN:
+  * Posee accesos generales de lectura médica.
+  * Bloqueado por interfaz para prevenir registros médicos erróneos (No ve botones de "Registrar Vacuna").
+│   └── pdf.controller.ts          Exportación PDF (nuevo v5)
+├── services/
+│   ├── ehr.service.ts           Lógica EHR + control de acceso
+│   ├── permission.service.ts    Lógica de permisos + validaciones
+│   ├── audit.service.ts         log() fire-and-forget + getAuditByPet()
+│   ├── vaccination.service.ts   Lógica vacunas + evento vaccination.created (nuevo v5)
+│   └── pdf.service.ts           Generación PDF con PDFKit (nuevo v5)
+├── repositories/
+│   ├── ehr.repository.ts        Interacciones ehr_records
+│   ├── permission.repository.ts Interacciones ehr_permissions
+│   ├── audit.repository.ts      Interacciones ehr_audit_logs
+│   └── vaccination.repository.ts Interacciones vaccinations (nuevo v5)
+├── routes/
+│   ├── ehr.routes.ts            Rutas EHR principal
+│   ├── permission.routes.ts     Rutas de permisos
+│   ├── audit.routes.ts          Rutas de auditoría
+│   ├── vaccination.routes.ts    Rutas de vacunas (nuevo v5)
+│   ├── pdf.routes.ts            Rutas de exportación PDF (nuevo v5)
+│   └── index.ts                 Router principal + health check
+├── models/
+│   ├── ehr.model.ts      Interfaces TypeScript (EHR, permisos, auditoría)
+│   └── vaccination.model.ts Interfaces TypeScript (vacunas) (nuevo v5)
+├── middlewares/
+│   ├── auth.middleware.ts Verificación JWT
+│   ├── validate.middleware.ts Validación express-validator
+│   └── error.middleware.ts Handler global de errores
+├── utils/
+│   ├── response.util.ts  sendSuccess / sendError
+│   └── jwt.util.ts       verifyToken
+└── server.ts             Servidor Express (puerto 3004)
+
+database/
+  schema.sql                     ← Esquema original
+  migration_v2_permissions_audit.sql
+  migration_v3_vaccinations.sql  ← NUEVO v5 — tabla vaccinations
+  rls_security.sql               ← Políticas RLS (helper: public.jwt_claim)
+
+================================================================
+## ENDPOINTS
+================================================================
+
+Base URL: /api/v1
+
+GET  /health
+  → Health check del servicio
+  → Respuesta: { status: "ok", service: "ehr-service" }
+
+--- EHR Records ---
+
+POST /ehr
+  → Crear nuevo registro médico
+  → Requiere: role === CLINIC_ADMIN || VETERINARIO
+  → Valida que la mascota pertenezca a la clínica del usuario
+  → Body: { pet_id, visit_date, veterinarian_id?, reason?,
+            anamnesis?, diagnosis?, treatment?,
+            prescriptions?, lab_results?, notes? }
+  → clinic_id: se extrae del JWT (NUNCA del body)
+  → Respuesta 201: EhrRecordPublic
+
+GET  /ehr/pet/:petId
+  → Obtener historial completo de una mascota
+  → OWNER: ve todos los registros (valida ownership via Pet Service)
+  → CLINIC: ve todos los registros si tiene permiso en ehr_permissions,
+             si no, solo ve sus propios registros
+  → Respuesta 200: EhrRecordPublic[]
+
+GET  /ehr/:id
+  → Detalle de una consulta específica
+  → OWNER: valida que la mascota le pertenece
+  → CLINIC: valida que record.clinic_id === user.clinic_id
+             OR existe permiso en ehr_permissions
+  → Respuesta 200: EhrRecordPublic
+
+PUT  /ehr/:id
+  → Actualizar un registro médico
+  → Requiere: role === CLINIC_ADMIN || VETERINARIO && record.clinic_id === user.clinic_id
+  → Body: campos opcionales (todos excepto pet_id y clinic_id)
+  → Respuesta 200: EhrRecordPublic
+
+DELETE /ehr/:id
+  → Eliminar un registro médico
+  → Requiere: role === CLINIC_ADMIN || VETERINARIO && record.clinic_id === user.clinic_id
+  → Respuesta 200: { data: null }
+
+--- Consentimiento (v2) ---
+
+POST /ehr/permissions
+  → OWNER otorga acceso a una clínica
+  → Requiere: role === OWNER
+  → Body: { pet_id, clinic_id }
+  → Valida: pet existe, caller es dueño, clinic_id es UUID válido
+  → Respuesta 201: EhrPermissionRow
+
+DELETE /ehr/permissions
+  → OWNER revoca acceso a una clínica
+  → Requiere: role === OWNER
+  → Body: { pet_id, clinic_id }
+  → Error 404 si el permiso no existe (DELETE protection)
+  → Respuesta 200: { data: null }
+
+GET  /ehr/permissions/:petId
+  → Lista clínicas autorizadas para una mascota
+  → OWNER: debe ser dueño de la mascota
+  → CLINIC: debe tener permiso en ehr_permissions
+  → Respuesta 200: EhrPermissionRow[]
+
+--- Auditoría (v3) ---
+
+GET  /ehr/audit/:petId
+  → Historial de acciones sobre registros de una mascota
+  → OWNER: debe ser dueño
+  → CLINIC: debe tener permiso en ehr_permissions
+  → Respuesta 200: EhrAuditLogRow[]
+
+--- Vacunas (v5) ---
+
+POST /ehr/vaccinations
+  → Registrar una vacuna aplicada a una mascota
+  → Requiere: role === CLINIC_ADMIN || VETERINARIO
+  → clinic_id: siempre del JWT (nunca del body)
+  → Si role === VETERINARIO y veterinarian_id no se pasa, se usa user.sub
+  → Guarda duplicados: rechaza si la misma vacuna fue aplicada ±30 días antes
+  → Body: { pet_id, vaccine_name, application_date, next_due_date?,
+            batch_number?, veterinarian_id?, notes? }
+  → Emite evento: vaccination.created (console.log estructurado)
+  → Respuesta 201: VaccinationPublic
+  → Error 409: Duplicado detectado (±30 días)
+
+GET  /ehr/:petId/vaccinations
+  → Lista todas las vacunas de una mascota, más recientes primero
+  → OWNER: verifica ownership vía Pet Service
+  → CLINIC: su clinic_id o permiso en ehr_permissions
+  → Respuesta 200: VaccinationPublic[]
+
+--- Exportación PDF (v5) ---
+
+GET  /ehr/:petId/export/pdf
+  → Genera y descarga historial clínico completo en PDF
+  → Acceso: mismo control que EHR getRecordsByPet
+  → Contenido:
+      Sección 1: Encabezado (PetWell, fecha generación)
+      Sección 2: Datos de la mascota (nombre, especie, raza, edad, peso)
+      Sección 3: Historial clínico (ehr_records en orden cronológico)
+      Sección 4: Tabla de vacunas (vaccine_name, fecha, próxima dosis, lote)
+  → Librería: PDFKit (pure Node.js, sin Chromium)
+  → Content-Type: application/pdf
+  → Content-Disposition: attachment; filename="historial-{petId}.pdf"
+  → Respuesta 200: Buffer PDF
+
+================================================================
+## MODELO DE SEGURIDAD
+================================================================
+
+Autenticación:
+  Todas las rutas requieren Authorization: Bearer <JWT>
+  JWT generado por User Service (clave compartida JWT_SECRET)
+
+Payload JWT esperado:
+  { sub, email, role, clinic_id?, iat, exp }
+
+Control de acceso por operación:
+
+  Operación            | DUENO_MASCOTA                | CLINIC_ADMIN                              | VETERINARIO
+  ---------------------|------------------------------|-------------------------------------------|-------------------------------------------
+  Ver historial        | ✅ (mascotas propias)          | ✅ (su clinic_id o permiso ehr_permissions) | ✅ (su clinic_id o permiso ehr_permissions)
+  Ver registro único   | ✅ (mascotas propias)          | ✅ (su clinic_id o permiso ehr_permissions) | ✅ (su clinic_id o permiso ehr_permissions)
+  Crear registro       | ❌                            | ✅ (clinic_id del JWT + validación mascota) | ✅ (clinic_id del JWT + validación mascota)
+  Editar registro      | ❌                            | ✅ (solo los de su clínica)                 | ✅ (solo los de su clínica)
+  Eliminar registro    | ❌                            | ✅ (solo los de su clínica)                 | ✅ (solo los de su clínica)
+  Otorgar permiso      | ✅ (mascotas propias)          | ❌                                         | ❌
+  Revocar permiso      | ✅ (mascotas propias)          | ❌                                         | ❌
+  Ver permisos         | ✅ (mascotas propias)          | ✅ (si tiene permiso)                      | ✅ (si tiene permiso)
+  Ver auditoría        | ✅ (mascotas propias)          | ✅ (si tiene permiso)                      | ✅ (si tiene permiso)
+
+Flujo de consentimiento cruzado:
+  1. OWNER llama POST /ehr/permissions con { pet_id, clinic_id }
+  2. EHR Service verifica: caller es dueño (via Pet Service)
+  3. Se inserta fila en ehr_permissions
+  4. La clínica ahora puede ver TODOS los registros de esa mascota
+  5. OWNER puede revocar con DELETE /ehr/permissions
+
+Principios de seguridad:
+  - clinic_id jamás se acepta del body del request
+  - Una clínica NO puede auto-asignarse permisos (solo OWNER)
+  - clinic_id en permisos debe ser UUID válido (formato validado)
+  - DELETE de permiso inexistente retorna 404 (no silent no-op)
+  - El dueño puede consultar todo el historial de su mascota
+  - Auditoría es fire-and-forget: nunca bloquea operaciones de negocio
+
+================================================================
+## COMUNICACIÓN ENTRE SERVICIOS
+================================================================
+
+→ Pet Service (puerto 3002):
+  Endpoint: GET /api/v1/pets/:petId
+  Propósito:
+    1. Verificar que el dueño (OWNER) tiene acceso a la mascota
+    2. Verificar que la mascota existe antes de otorgar permisos (404 si no)
+  Header: Authorization: <token>   ← incluye el prefijo "Bearer "
+  Respuesta esperada: { data: { owner_ids: string[] } }
+
+  Si el Pet Service devuelve 404 → se lanza error 404 (mascota no existe).
+  Si el Pet Service no responde → se deniega el acceso (fail-secure).
+
+================================================================
+## VARIABLES DE ENTORNO REQUERIDAS
+================================================================
+
+PORT=3004
+NODE_ENV=development
+JWT_SECRET=<secreto compartido con todos los servicios>
+SUPABASE_URL=<url del proyecto supabase>
+SUPABASE_SERVICE_ROLE_KEY=<service role key>
+ALLOWED_ORIGINS=http://localhost:3000
+PET_SERVICE_URL=http://localhost:3002
+
+================================================================
+## RESPUESTA ESTÁNDAR
+================================================================
+
+Éxito:
+  { "success": true, "message": "...", "data": <payload> }
+
+Error:
+  { "success": false, "message": "...", "errors": [...] }
+
+Códigos HTTP usados:
+  200 — OK
+  201 — Creado
+  400 — Parámetro inválido (ej: clinic_id no es UUID)
+  401 — No autenticado
+  403 — Sin permisos
+  404 — No encontrado (registro o permiso inexistente)
+  422 — Error de validación
+  500 — Error interno
+  502 — Error de comunicación con Pet Service
+
+================================================================
+## SEGURIDAD — ROW LEVEL SECURITY (RLS)
+================================================================
+
+Script: database/rls_security.sql
+Ejecutar DESPUÉS de schema.sql y migration_v2_permissions_audit.sql
+
+Estado RLS por tabla:
+
+  Tabla              | RLS  | Políticas
+  -------------------|------|----------
+  ehr_records        | ✅   | SELECT: staff misma clínica, cross-clínica con permiso, DUENO read-only
+                     |      | INSERT/UPDATE/DELETE: CLINIC_ADMIN + VETERINARIO misma clínica
+  ehr_permissions    | ✅   | SELECT: owner (propias), staff (su clínica)
+                     |      | INSERT: solo DUENO_MASCOTA como granted_by (anti-auto-grant)
+                     |      | DELETE: solo DUENO_MASCOTA (revocación)
+                     |      | Sin UPDATE — revocar = eliminar y volver a crear
+  ehr_audit_logs     | ✅   | SELECT: owner (por actor_id), staff (por clinic_id)
+                     |      | INSERT: permitido (service role lo usa)
+                     |      | Sin UPDATE ni DELETE — INMUTABLES por diseño
+  vaccinations       | ❌   | Sin RLS — acceso controlado 100% en service layer
+
+Helper function:
+  public.jwt_claim(claim TEXT) → extrae claim del JWT con NULLIF seguro
+  Accede a: current_setting('request.jwt.claims', true)::json ->> claim
+  Se creó en PUBLIC (no en auth.*) para evitar el error de permisos.
+
+Claims JWT usados:
+  sub       → UUID del usuario
+  role      → DUENO_MASCOTA | CLINIC_ADMIN | VETERINARIO
+  clinic_id → UUID de la clínica (null para DUENO_MASCOTA)
+
+Protecciones adicionales implementadas:
+  - ehr_permissions solo puede ser insertada por DUENO_MASCOTA
+    (clínicas NO pueden auto-asignarse permisos)
+  - ehr_audit_logs no tienen UPDATE ni DELETE policy
+    (inmutabilidad total del registro de auditoría)
+  - clinic_id en ehr_records siempre debe coincidir con el JWT
+    (aislamiento criptográfico entre clínicas)
+
+Nota importante sobre Service Role:
+  La capa Node.js usa SUPABASE_SERVICE_ROLE_KEY que bypassa RLS.
+  Estas políticas protegen acceso directo a la BD.
+  Validación de negocio (ownership, permissions) en service layer.
+
+================================================================
+## CHANGELOG
+================================================================
+
+v5.0.0 — 2026-04-07
+  - Sistema de vacunas (vaccinations):
+    * Nueva tabla: vaccinations (migration_v3_vaccinations.sql)
+    * Modelo: VaccinationRow, CreateVaccinationDto, VaccinationPublic
+    * Guard de duplicados: rechaza si misma vacuna ±30 días
+    * Asignación automática de veterinarian_id para rol VETERINARIO
+    * Evento vaccination.created emitido como console.log estructurado
+    * Control de acceso espejeado al de ehr_records
+    * Archivos: vaccination.model.ts, vaccination.repository.ts,
+      vaccination.service.ts, vaccination.controller.ts, vaccination.routes.ts
+  - Exportación PDF (GET /ehr/:petId/export/pdf):
+    * Librería: PDFKit (sin Chromium)
+    * Secciones: encabezado, datos mascota, historial EHR, tabla vacunas
+    * Control de acceso idéntico a getRecordsByPet
+    * Archivos: pdf.service.ts, pdf.controller.ts, pdf.routes.ts
+  - Nueva dependencia: pdfkit + @types/pdfkit
+  - routes/index.ts actualizado con vaccination y pdf routes
+  - RLS: actor_id corregido (era performed_by) en ehr_audit_logs_select
+  - RLS: jwt_claim migrada a public.jwt_claim (no auth.*)
+
+v4.0.0 — 2026-04-07
+  - RLS activado en las 3 tablas del EHR Service
+  - Script: database/rls_security.sql
+  - Políticas: ehr_records, ehr_permissions, ehr_audit_logs
+  - ehr_permissions protegida contra auto-asignación de clínicas
+  - ehr_audit_logs inmutables (sin UPDATE/DELETE policy)
+  - Helper auth.jwt_claim() para acceso seguro a JWT claims
+  - Resuelve alertas Supabase: rls_disabled_in_public + sensitive_columns_exposed
+
+v10.3 — 2026-03-22
+  - Permisos EHR corregidos para VETERINARIO
+  - VETERINARIO ahora puede CREATE / UPDATE / DELETE registros médicos
+  - Roles renombrados: OWNER → DUENO_MASCOTA, CLINIC → CLINIC_ADMIN
+  - Validación por clínica en createRecord: pet.primary_clinic_id === user.clinic_id
+  - Manejo específico de error 404 cuando la mascota no existe
+  - Token real enviado a Pet Service (no placeholder)
+  - Archivos modificados: ehr.service.ts, ehr.controller.ts,
+    permission.service.ts, audit.service.ts, ehr.model.ts
+
+v3.2.0 — 2026-03-21
+  - Validación estricta de clinic_id extraído del JWT antes de insertar en BD
+  - Previene error "invalid input syntax for type uuid" en Supabase
+  - Respuesta 400 con mensaje claro si el JWT contiene un clinic_id malformado
+  - console.error con el valor inválido para facilitar debugging
+  - clinic_id continúa viniendo SIEMPRE del JWT, jamás del body del request
+
+v3.1.0 — 2026-03-21
+  - Ajuste acceso OWNER: GET /ehr/pet/:petId devuelve [] cuando no hay registros
+  - El 403 aplica SOLAMENTE si el usuario NO es dueño de la mascota
+  - Un dueño verificado con historial vacío recibe 200 OK con []
+
+v3.0.0 — 2026-03-21
+  - Auditoría completa: registro persistente de CREATE/VIEW/UPDATE/DELETE
+  - Los GET (lista y detalle) también registran auditoría VIEW
+  - Nuevo endpoint: GET /ehr/audit/:petId (acceso: OWNER o CLINIC con permiso)
+  - audit.service.ts: fire-and-forget, nunca bloquea operaciones
+  - audit.repository.ts, audit.controller.ts, audit.routes.ts
+
+v2.0.0 — 2026-03-21
+  - Consentimiento entre clínicas: tabla ehr_permissions
+  - OWNER puede otorgar/revocar acceso a clínicas externas
+  - Una clínica con permiso ve TODOS los registros de esa mascota
+  - Protección anti-auto-registro (solo OWNER puede otorgar permisos)
+  - Validación de clinic_id como UUID antes de insertar
+  - DELETE protection: 404 si el permiso no existe
+  - Validación de existencia de mascota via Pet Service (404 si no existe)
+  - permission.repository.ts, permission.service.ts, permission.controller.ts, permission.routes.ts
+  - Script de migración separado: database/migration_v2_permissions_audit.sql
+
+v1.0.0 — 2026-03-21
+  - Creación del microservicio EHR Service
+  - Tabla ehr_records con trigger updated_at e índices
+  - CRUD completo: POST, GET /pet/:petId, GET /:id, PUT, DELETE
+  - Seguridad por rol: OWNER=ver, CLINIC=crear/editar/eliminar
+  - clinic_id siempre del JWT, nunca del body del request
+  - Verificación de ownership de mascota via Pet Service
+  - Clínicas aisladas: solo ven sus propios registros
+  - TypeScript estricto, 0 errores de compilación
+
+v6.0.0 — 2026-04-07
+  - pdf.service.ts completamente rediseñado (layout profesional clínico v2.0)
+  - Header: Logo clínica (60px) a la izquierda + nombre + "Historia Clínica" + fecha derecha
+  - Mascota: Diseño en 2 columnas — foto 80px + campos de texto a la derecha
+  - Nueva sección: 👨‍⚕️ Información del Veterinario (nombre completo del Dr./Dra.)
+    * Resuelto: se hace JOIN de veterinarian_id → User Service para obtener nombre
+  - Historial clínico: strip de cabecera azul por consulta + nombre vet en la misma fila
+  - Vacunas: tabla de 5 columnas con columna "Estado" colorizada
+    * Verde: Vigente, Naranja: Próxima (≤30 días), Rojo: Vencida
+  - Footer: línea separadora + texto confidencial centrado
+  - Paginación defensiva: ensureSpace() antes de cada sección/fila
+  - Eliminada creación de página innecesaria al final
+  - Añadida función: vaccineStatus() → calcula estado por fecha actual
+  - Añadida función: fetchVet() → consulta User Service para nombre del vet
+
+================================================================
+
