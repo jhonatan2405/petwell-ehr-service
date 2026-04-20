@@ -42,6 +42,7 @@ export const vaccinationService = {
     async createVaccination(
         dto: CreateVaccinationDto,
         user: JwtPayload,
+        token: string,
     ): Promise<VaccinationPublic> {
         if (user.role !== 'CLINIC_ADMIN' && user.role !== 'VETERINARIO') {
             throw makeError('Solo clínicas y veterinarios pueden registrar vacunas', 403);
@@ -95,6 +96,9 @@ export const vaccinationService = {
             }),
         );
 
+        // Disparar las notificaciones asíncronamente
+        schedulePetVaccineReminders(record, token).catch(() => {});
+
         return record;
     },
 
@@ -129,3 +133,102 @@ export const vaccinationService = {
         throw makeError('No tienes permisos para ver vacunas', 403);
     },
 };
+
+// -----------------------------------------------------------------------
+// Helper: Schedule Notifications
+// -----------------------------------------------------------------------
+async function schedulePetVaccineReminders(
+    record: VaccinationPublic,
+    token: string,
+) {
+    if (!record.next_due_date) return;
+
+    try {
+        // 1. Obtener mascota para leer owner_id y nombre
+        const petRes = await fetch(`${env.petServiceUrl}/api/v1/pets/${record.pet_id}`, {
+            headers: { Authorization: token },
+        });
+        if (!petRes.ok) return;
+        const petBody = await petRes.json() as any;
+        const petData = petBody.data;
+        
+        let ownerId = petData?.owner_id;
+        if (!ownerId && petData?.owner_ids && Array.isArray(petData.owner_ids)) {
+            ownerId = petData.owner_ids[0];
+        }
+        if (!ownerId && petData?.owners && Array.isArray(petData.owners)) {
+            ownerId = petData.owners[0]?.id;
+        }
+        if (!ownerId) return;
+
+        // 2. Obtener user para leer nombre
+        const userRes = await fetch(`${env.userServiceUrl}/api/v1/users/${ownerId}`, {
+            headers: { Authorization: token },
+        });
+        if (!userRes.ok) return;
+        const userBody = await userRes.json() as any;
+        const userData = userBody.data;
+
+        // Limpiar H:M para alinear fechas relativas al día actual limpio
+        const todayStr = new Date().toISOString().split('T')[0];
+        const nextDueDateLocal = new Date(`${record.next_due_date}T12:00:00`);
+        
+        const upcomingDate = new Date(nextDueDateLocal);
+        upcomingDate.setDate(upcomingDate.getDate() - 30);
+
+        // Si faltan - de 30 días, scheduleDate caería en pasado, por ende saldría inmediato.
+        // Pero si la vacuna ya venció (o está en < 0 días relativas a hoy), NO debemos alertar "próxima".
+        const now = new Date(`${todayStr}T12:00:00`);
+        const daysToDue = Math.ceil((nextDueDateLocal.getTime() - now.getTime()) / (1000 * 3600 * 24));
+        
+        const dateFormattedStr = nextDueDateLocal.toLocaleDateString('es-CO');
+        const petName = petData?.name || 'tu mascota';
+        const ownerFirstName = userData?.first_name || 'Hola';
+
+        const reqs: Promise<Response>[] = [];
+
+        // Si faltan > 0 días, encolamos el "Próxima a vencer" (-30 días). 
+        // Nota: Si faltan <= 30 días (pero > 0), target.scheduled_at <= now, se dispara ya mismo (lo cual es genial)
+        if (daysToDue > 0) {
+            const payload1 = {
+                user_id: ownerId,
+                email: userData?.email,
+                type: 'VACCINE_REMINDER',
+                channel: 'EMAIL',
+                title: '💉 Vacuna próxima a vencer',
+                message: `${ownerFirstName}, te recordamos que la vacuna ${record.vaccine_name} de ${petName} vence el ${dateFormattedStr}. ¡Agenda pronto!`,
+                scheduled_at: upcomingDate.toISOString(),
+                metadata: { pet_id: record.pet_id, vaccination_id: record.id }
+            };
+            reqs.push(fetch(`${env.notificationServiceUrl}/api/v1/notifications`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: token },
+                body: JSON.stringify(payload1)
+            }));
+        }
+
+        // Encolamos el de "Vencida" para la fecha exacta de next_due_date (o lo disparamos localmente si day <= 0)
+        const payload2 = {
+            user_id: ownerId,
+            email: userData?.email,
+            type: 'VACCINE_REMINDER',
+            channel: 'EMAIL',
+            title: '🚨 ¡Vacuna vencida o aplicable hoy!',
+            message: `La vacuna ${record.vaccine_name} de ${petName} está programada para aplicarse a partir de hoy.`,
+            scheduled_at: nextDueDateLocal.toISOString(),
+            metadata: { pet_id: record.pet_id, vaccination_id: record.id }
+        };
+        reqs.push(fetch(`${env.notificationServiceUrl}/api/v1/notifications`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: token },
+            body: JSON.stringify(payload2)
+        }));
+
+        await Promise.all(reqs);
+
+        console.log(`[VaccinationService] Programadas ${reqs.length} alertas de vacuna para mascota ${record.pet_id}`);
+
+    } catch (e) {
+        console.error('[VaccinationService] Error programando notificaciones de vacuna', e);
+    }
+}

@@ -23,6 +23,7 @@ export const env = {
     allowedOrigins: (process.env['ALLOWED_ORIGINS'] ?? 'http://localhost:3000').split(','),
     petServiceUrl: process.env['PET_SERVICE_URL'] ?? 'http://localhost:3002',
     userServiceUrl: process.env['USER_SERVICE_URL'] ?? 'http://localhost:3003',
+    notificationServiceUrl: process.env['NOTIFICATION_SERVICE_URL'] ?? 'http://localhost:3007',
     isDevelopment: process.env['NODE_ENV'] === 'development',
     isProduction: process.env['NODE_ENV'] === 'production',
 };

@@ -499,3 +499,29 @@ v6.0.0 â€” 2026-04-07
 
 ================================================================
 
+
+v21.10 — Alertas programadas de vacunación
+
+OBJETIVO:
+  Notificar a los dueños de mascotas mediante correo electrónico y campanita in-app cuando sus mascotas tengan vacunas vencidas o próximas a vencer.
+
+IMPLEMENTACIÓN:
+  1. Integración EHR -> Notification Service:
+     - accination.service.ts fue proveído con el token JWT a través de su controlador.
+     - En el método createVaccination, una vez generada con éxito la vacuna, se lanza asincronamente schedulePetVaccineReminders.
+     - Este resolverá los datos del propietario mediante consultas S2S seguras a Pet Service y User Service.
+  
+  2. Programación de Alertas (Cron Ready):
+     Si existe 
+ext_due_date:
+     - Se crea un Job (EMAIL) 30 días antes con el Title "?? Vacuna próxima a vencer".
+     - Se crea un Job (EMAIL) el mismo exacto día del vencimiento con el Title "?? ¡Vacuna vencida o aplicable hoy!".
+     - Al usar el API de 
+otification-service, los "Jobs" naturalmente caen en SQLite/Supabase como status: PENDING y scheduled_at, donde su Scheduler nativo existente (1 minuto cron) los evaluará y despachará via Nodemailer.
+     - Este mecanismo regala nativamente la campanita In-App ya que el Frontend se alimenta de los registros de DB.
+  
+  3. Lógica Cero Duplicada:
+     - Si la vacuna nueva que están ingresando vence en menos de 30 días, la notificación "Próxima a vencer" tendrá un scheduled_at virtualmente en el pasado en el offset, resultando en un disparo inmediato.
+     - Si el día actual es mayor que 
+ext_due_date (es decir, fue registrada vencida), omitimos encolar "Próxima" para no generar spam confuso y sólo disparamos la de Vencida.
+

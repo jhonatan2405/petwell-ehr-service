@@ -10,9 +10,10 @@ export const vaccinationController = {
      */
     async createVaccination(req: Request, res: Response): Promise<void> {
         const user = req.user as JwtPayload;
+        const token = req.headers.authorization as string;
 
         try {
-            const record = await vaccinationService.createVaccination(req.body, user);
+            const record = await vaccinationService.createVaccination(req.body, user, token);
             sendSuccess(res, record, 'Vacuna registrada exitosamente', 201);
         } catch (err: unknown) {
             const error = err as { message?: string; statusCode?: number };
