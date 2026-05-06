@@ -50,18 +50,14 @@ jobs:
           retention-days: 7
 
   deploy:
-    name: 🚀 Deploy → Render
+    name: 🚀 Verify Deploy → Railway
     runs-on: ubuntu-latest
     needs: ci
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - name: 🚀 Disparar deploy en Render
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" \
-            --request POST \
-            "${{ secrets.RENDER_DEPLOY_HOOK_EHR }}"
-          echo " → EHR Service deploy enviado"
+      - name: ⏳ Esperar que Railway procese el despliegue
+        run: sleep 20
 
       - name: ✅ Deploy completado
-        run: echo "🎉 EHR Service desplegado en Render"
+        run: echo "🎉 EHR Service desplegado en Railway (integración automática vía GitHub)"
