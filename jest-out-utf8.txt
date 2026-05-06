@@ -1,0 +1,551 @@
+﻿cmd : PASS tests/integration/pdf.controller.test.ts
+En línea: 1 Carácter: 1
++ cmd /c npx jest tests/integration > jest-out.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (PASS tests/inte...troller.test.ts:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  ÔùÅ Console
+
+    console.log
+      
+        ÔòöÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòù
+        Ôòæ  ­ƒÉ¥ PetWell ÔÇö EHR Service                Ôòæ
+        Ôòæ  Mode  : test                            Ôòæ
+        Ôòæ  Port  : 0                               Ôòæ
+        ÔòÜÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòØ
+
+      at Server.<anonymous> (src/server.ts:40:13)
+
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/audit/223e4567-e89b-12d3-a456-426614174001 HTTP/1.1" 200 102 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/223e4567-e89b-12d3-a456-426614174001/export/pdf HTTP/1.1" 200 16 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "POST /api/v1/ehr/permissions HTTP/1.1" 201 181 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/audit/223e4567-e89b-12d3-a456-426614174001 HTTP/1.1" 403 43 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/223e4567-e89b-12d3-a456-426614174001/export/pdf HTTP/1.1" 500 50 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "POST /api/v1/ehr/permissions HTTP/1.1" 403 47 "-" "-"
+PASS tests/integration/audit.controller.test.ts
+  ÔùÅ Console
+
+    console.log
+      
+        ÔòöÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòù
+        Ôòæ  ­ƒÉ¥ PetWell ÔÇö EHR Service                Ôòæ
+        Ôòæ  Mode  : test                            Ôòæ
+        Ôòæ  Port  : 0                               Ôòæ
+        ÔòÜÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòØ
+
+      at Server.<anonymous> (src/server.ts:40:13)
+
+    console.error
+      [EHR ErrorHandler] Error: No autorizado
+          at Object.<anonymous> (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\tests\integration\audit.controller.test.ts:38:32)
+          at Promise.finally.completed (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at _runTest (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-runner\build\testWorker.js:275:16)
+          at runTest (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-runner\build\testWorker.js:343:7)
+          at Object.worker (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-runner\build\testWorker.js:497:12) {
+        statusCode: 403
+      }
+
+    [0m [90m 14 |[39m     _next[33m:[39m [33mNextFunction[39m[33m,[39m
+     [90m 15 |[39m )[33m:[39m [36mvoid[39m [33m=>[39m {
+    [31m[1m>[22m[39m[90m 16 |[39m     console[33m.[39merror([32m'[EHR ErrorHandler]'[39m[33m,[39m 
+err)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 17 |[39m
+     [90m 18 |[39m     [36mconst[39m statusCode [33m=[39m (err [36mas[39m { statusCode[33m?[39m[33m:[39m 
+number })[33m.[39mstatusCode [33m?[39m[33m?[39m [35m500[39m[33m;[39m
+     [90m 19 |[39m     [36mconst[39m message [33m=[39m env[33m.[39misProduction[0m
+
+      at errorHandler (src/middlewares/error.middleware.ts:16:13)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:71:5)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at next (node_modules/express/lib/router/index.js:280:10)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:67:12)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at Immediate.next (node_modules/express/lib/router/index.js:280:10)
+      at Immediate._onImmediate (node_modules/express/lib/router/index.js:646:15)
+
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "POST /api/v1/ehr/vaccinations HTTP/1.1" 201 184 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "POST /api/v1/ehr/vaccinations HTTP/1.1" 404 51 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "DELETE /api/v1/ehr/permissions HTTP/1.1" 403 94 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/permissions/223e4567-e89b-12d3-a456-426614174001 HTTP/1.1" 200 123 "-" "-"
+PASS tests/integration/vaccination.controller.test.ts
+  ÔùÅ Console
+
+    console.log
+      
+        ÔòöÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòù
+        Ôòæ  ­ƒÉ¥ PetWell ÔÇö EHR Service                Ôòæ
+        Ôòæ  Mode  : test                            Ôòæ
+        Ôòæ  Port  : 0                               Ôòæ
+        ÔòÜÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòØ
+
+      at Server.<anonymous> (src/server.ts:40:13)
+
+FAIL tests/integration/permission.controller.test.ts
+  ÔùÅ Console
+
+    console.log
+      
+        ÔòöÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòù
+        Ôòæ  ­ƒÉ¥ PetWell ÔÇö EHR Service                Ôòæ
+        Ôòæ  Mode  : test                            Ôòæ
+        Ôòæ  Port  : 0                               Ôòæ
+        ÔòÜÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòØ
+
+      at Server.<anonymous> (src/server.ts:40:13)
+
+    console.error
+      [EHR ErrorHandler] Error: No tienes permiso
+          at Object.<anonymous> (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\tests\integration\permission.controller.test.ts:42:32)
+          at Promise.finally.completed (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:1497:10)
+          at _callCircusTest (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at _runTest (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:947:3)
+          at C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:857:11)
+          at run (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\jestAdapterInit.js:1918:21)
+          at jestAdapter (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-circus\build\runner.js:101:19)
+          at runTestInternal (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-runner\build\testWorker.js:275:16)
+          at runTest (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-runner\build\testWorker.js:343:7)
+          at Object.worker (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\jest-runner\build\testWorker.js:497:12) {
+        statusCode: 403
+      }
+
+    [0m [90m 14 |[39m     _next[33m:[39m [33mNextFunction[39m[33m,[39m
+     [90m 15 |[39m )[33m:[39m [36mvoid[39m [33m=>[39m {
+    [31m[1m>[22m[39m[90m 16 |[39m     console[33m.[39merror([32m'[EHR ErrorHandler]'[39m[33m,[39m 
+err)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 17 |[39m
+     [90m 18 |[39m     [36mconst[39m statusCode [33m=[39m (err [36mas[39m { statusCode[33m?[39m[33m:[39m 
+number })[33m.[39mstatusCode [33m?[39m[33m?[39m [35m500[39m[33m;[39m
+     [90m 19 |[39m     [36mconst[39m message [33m=[39m env[33m.[39misProduction[0m
+
+      at errorHandler (src/middlewares/error.middleware.ts:16:13)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:71:5)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at next (node_modules/express/lib/router/index.js:280:10)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:67:12)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at Immediate.next (node_modules/express/lib/router/index.js:280:10)
+      at Immediate._onImmediate (node_modules/express/lib/router/index.js:646:15)
+
+    console.error
+      [EHR ErrorHandler] Error: Solo cl├¡nicas y veterinarios pueden eliminar registros m├®dicos
+          at makeError (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\services\ehr.service.ts:50:17)
+          at Object.makeError [as deleteRecord] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\src\services\ehr.service.ts:307:19)
+          at deleteRecord (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\controllers\ehr.controller.ts:103:30)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\route.js:149:13)
+          at authenticate (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\middlewares\auth.middleware.ts:41:9)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\route.js:149:13)
+          at Route.dispatch (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\route.js:119:3)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:284:15
+          at param (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:365:14)
+          at param (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:376:14)
+          at Function.process_params (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:421:3)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:280:10)
+          at Function.handle (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:175:3)
+          at router (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:47:12)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at trim_prefix (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:328:13)
+          at C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:286:9
+          at Function.process_params (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:346:12)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:280:10)
+          at Function.handle (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:175:3)
+          at router (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:47:12)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at trim_prefix (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:328:13)
+          at C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:286:9
+          at Function.process_params (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:346:12)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:280:10)
+          at logger (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\morgan\index.js:144:5)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at trim_prefix (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:328:13)
+          at C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:286:9
+          at Function.process_params (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:346:12)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:280:10)
+          at urlencodedParser (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\body-parser\lib\types\urlencoded.js:82:7)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at trim_prefix (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:328:13)
+          at C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:286:9
+          at Function.process_params (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\index.js:346:12)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\index.js:280:10)
+          at C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\body-parser\lib\read.js:137:5
+          at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+          at invokeCallback (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\raw-body\index.js:238:16)
+          at done (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\raw-body\index.js:227:7)
+          at IncomingMessage.onEnd (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\raw-body\index.js:287:7)
+          at IncomingMessage.emit (node:events:518:28)
+          at endReadableNT (node:internal/streams/readable:1698:12)
+          at processTicksAndRejections (node:internal/process/task_queues:90:21) {
+        statusCode: 403
+      }
+
+    [0m [90m 14 |[39m     _next[33m:[39m [33mNextFunction[39m[33m,[39m
+     [90m 15 |[39m )[33m:[39m [36mvoid[39m [33m=>[39m {
+    [31m[1m>[22m[39m[90m 16 |[39m     console[33m.[39merror([32m'[EHR ErrorHandler]'[39m[33m,[39m 
+err)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 17 |[39m
+     [90m 18 |[39m     [36mconst[39m statusCode [33m=[39m (err [36mas[39m { statusCode[33m?[39m[33m:[39m 
+number })[33m.[39mstatusCode [33m?[39m[33m?[39m [35m500[39m[33m;[39m
+     [90m 19 |[39m     [36mconst[39m message [33m=[39m env[33m.[39misProduction[0m
+
+      at errorHandler (src/middlewares/error.middleware.ts:16:13)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:71:5)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at next (node_modules/express/lib/router/index.js:280:10)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:67:12)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at Immediate.next (node_modules/express/lib/router/index.js:280:10)
+      at Immediate._onImmediate (node_modules/express/lib/router/index.js:646:15)
+
+  ÔùÅ Permission Controller Integration Tests ÔÇ║ DELETE /api/v1/ehr/permissions ÔÇ║ should revoke permission 
+successfully
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 403
+
+    [0m [90m 66 |[39m                 [33m.[39msend(payload)[33m;[39m
+     [90m 67 |[39m
+    [31m[1m>[22m[39m[90m 68 |[39m             
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m    |[39m                                [31m[1m^[22m[39m
+     [90m 69 |[39m             expect(res[33m.[39mbody[33m.[39msuccess)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m 70 |[39m         })[33m;[39m
+     [90m 71 |[39m     })[33m;[39m[0m
+
+      at Object.<anonymous> (tests/integration/permission.controller.test.ts:68:32)
+
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/223e4567-e89b-12d3-a456-426614174001/vaccinations HTTP/1.1" 200 83 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/223e4567-e89b-12d3-a456-426614174001/vaccinations HTTP/1.1" 403 43 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "POST /api/v1/ehr HTTP/1.1" 401 77 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "POST /api/v1/ehr HTTP/1.1" 403 91 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "POST /api/v1/ehr HTTP/1.1" 201 370 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "POST /api/v1/ehr HTTP/1.1" 500 64 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/pet/223e4567-e89b-12d3-a456-426614174001 HTTP/1.1" 200 93 "-" "-"
+PASS tests/integration/ehr.controller.test.ts
+  ÔùÅ Console
+
+    console.log
+      
+        ÔòöÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòù
+        Ôòæ  ­ƒÉ¥ PetWell ÔÇö EHR Service                Ôòæ
+        Ôòæ  Mode  : test                            Ôòæ
+        Ôòæ  Port  : 0                               Ôòæ
+        ÔòÜÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòØ
+
+      at Server.<anonymous> (src/server.ts:40:13)
+
+    console.log
+      [DEBUG-CONTROLLER] req.body: {
+        pet_id: '223e4567-e89b-12d3-a456-426614174001',
+        veterinarian_id: '323e4567-e89b-12d3-a456-426614174002',
+        visit_date: '2023-10-10',
+        visit_time: '10:00',
+        reason: 'Checkup',
+        anamnesis: 'Healthy',
+        diagnosis: 'None',
+        treatment: 'None'
+      }
+
+      at log (src/controllers/ehr.controller.ts:20:21)
+
+    console.error
+      [EHR ErrorHandler] Error: Solo cl├¡nicas y veterinarios pueden crear registros m├®dicos
+          at makeError (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\services\ehr.service.ts:50:17)
+          at Object.makeError [as createRecord] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\src\services\ehr.service.ts:67:19)
+          at createRecord (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\controllers\ehr.controller.ts:22:45)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\route.js:149:13)
+          at validate (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\middlewares\validate.middleware.ts:21:5)
+          at Layer.handle [as handle_request] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express\lib\router\layer.js:95:5)
+          at next (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\node_modules\express\lib\router\route.js:149:13)
+          at middleware (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\node_modules\express-validator\lib\middlewares\check.js:16:13)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5) {
+        statusCode: 403
+      }
+
+    [0m [90m 14 |[39m     _next[33m:[39m [33mNextFunction[39m[33m,[39m
+     [90m 15 |[39m )[33m:[39m [36mvoid[39m [33m=>[39m {
+    [31m[1m>[22m[39m[90m 16 |[39m     console[33m.[39merror([32m'[EHR ErrorHandler]'[39m[33m,[39m 
+err)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 17 |[39m
+     [90m 18 |[39m     [36mconst[39m statusCode [33m=[39m (err [36mas[39m { statusCode[33m?[39m[33m:[39m 
+number })[33m.[39mstatusCode [33m?[39m[33m?[39m [35m500[39m[33m;[39m
+     [90m 19 |[39m     [36mconst[39m message [33m=[39m env[33m.[39misProduction[0m
+
+      at errorHandler (src/middlewares/error.middleware.ts:16:13)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:71:5)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at next (node_modules/express/lib/router/index.js:280:10)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:67:12)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at Immediate.next (node_modules/express/lib/router/index.js:280:10)
+      at Immediate._onImmediate (node_modules/express/lib/router/index.js:646:15)
+
+    console.log
+      [DEBUG-CONTROLLER] req.body: {
+        pet_id: '223e4567-e89b-12d3-a456-426614174001',
+        veterinarian_id: '323e4567-e89b-12d3-a456-426614174002',
+        visit_date: '2023-10-10',
+        visit_time: '10:00',
+        reason: 'Checkup',
+        anamnesis: 'Healthy',
+        diagnosis: 'None',
+        treatment: 'None'
+      }
+
+      at log (src/controllers/ehr.controller.ts:20:21)
+
+    console.log
+      [DEBUG-EHR-SERVICE] dto.veterinarian_id: 323e4567-e89b-12d3-a456-426614174002
+
+      at Object.log [as createRecord] (src/services/ehr.service.ts:131:17)
+
+    console.log
+      [DEBUG-EHR-SERVICE] Inserting into DB: {
+        pet_id: '223e4567-e89b-12d3-a456-426614174001',
+        veterinarian_id: '323e4567-e89b-12d3-a456-426614174002',
+        visit_date: '2023-10-10',
+        visit_time: '10:00',
+        reason: 'Checkup',
+        anamnesis: 'Healthy',
+        diagnosis: 'None',
+        treatment: 'None',
+        clinic_id: '123e4567-e89b-12d3-a456-426614174000'
+      }
+
+      at Object.log [as createRecord] (src/services/ehr.service.ts:132:17)
+
+    console.log
+      [DEBUG-EHR-SERVICE] DB Record Inserted: {
+        id: 'ehr-1',
+        pet_id: '223e4567-e89b-12d3-a456-426614174001',
+        veterinarian_id: '323e4567-e89b-12d3-a456-426614174002',
+        visit_date: '2023-10-10',
+        visit_time: '10:00',
+        reason: 'Checkup',
+        anamnesis: 'Healthy',
+        diagnosis: 'None',
+        treatment: 'None',
+        clinic_id: '123e4567-e89b-12d3-a456-426614174000'
+      }
+
+      at Object.log [as createRecord] (src/services/ehr.service.ts:133:17)
+
+    console.log
+      [DEBUG-CONTROLLER] req.body: {
+        pet_id: '223e4567-e89b-12d3-a456-426614174001',
+        veterinarian_id: '323e4567-e89b-12d3-a456-426614174002',
+        visit_date: '2023-10-10',
+        visit_time: '10:00',
+        reason: 'Checkup',
+        anamnesis: 'Healthy',
+        diagnosis: 'None',
+        treatment: 'None'
+      }
+
+      at log (src/controllers/ehr.controller.ts:20:21)
+
+    console.error
+      [EHR ErrorHandler] Error: Error interno al verificar mascota
+          at makeError (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\services\ehr.service.ts:50:17)
+          at Object.makeError [as createRecord] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\src\services\ehr.service.ts:105:19)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at createRecord (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\controllers\ehr.controller.ts:22:28) {
+        statusCode: 500
+      }
+
+    [0m [90m 14 |[39m     _next[33m:[39m [33mNextFunction[39m[33m,[39m
+     [90m 15 |[39m )[33m:[39m [36mvoid[39m [33m=>[39m {
+    [31m[1m>[22m[39m[90m 16 |[39m     console[33m.[39merror([32m'[EHR ErrorHandler]'[39m[33m,[39m 
+err)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 17 |[39m
+     [90m 18 |[39m     [36mconst[39m statusCode [33m=[39m (err [36mas[39m { statusCode[33m?[39m[33m:[39m 
+number })[33m.[39mstatusCode [33m?[39m[33m?[39m [35m500[39m[33m;[39m
+     [90m 19 |[39m     [36mconst[39m message [33m=[39m env[33m.[39misProduction[0m
+
+      at errorHandler (src/middlewares/error.middleware.ts:16:13)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:71:5)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at next (node_modules/express/lib/router/index.js:280:10)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:67:12)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at Immediate.next (node_modules/express/lib/router/index.js:280:10)
+      at Immediate._onImmediate (node_modules/express/lib/router/index.js:646:15)
+
+    console.error
+      [EHR ErrorHandler] Error: Registro m├®dico no encontrado
+          at makeError (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\services\ehr.service.ts:50:17)
+          at Object.makeError [as getRecordById] (C:\Users\ASUS\Desktop\petwell\EHR 
+mircroservice\src\services\ehr.service.ts:221:19)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at getRecordById (C:\Users\ASUS\Desktop\petwell\EHR mircroservice\src\controllers\ehr.controller.ts:64:28) {
+        statusCode: 404
+      }
+
+    [0m [90m 14 |[39m     _next[33m:[39m [33mNextFunction[39m[33m,[39m
+     [90m 15 |[39m )[33m:[39m [36mvoid[39m [33m=>[39m {
+    [31m[1m>[22m[39m[90m 16 |[39m     console[33m.[39merror([32m'[EHR ErrorHandler]'[39m[33m,[39m 
+err)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 17 |[39m
+     [90m 18 |[39m     [36mconst[39m statusCode [33m=[39m (err [36mas[39m { statusCode[33m?[39m[33m:[39m 
+number })[33m.[39mstatusCode [33m?[39m[33m?[39m [35m500[39m[33m;[39m
+     [90m 19 |[39m     [36mconst[39m message [33m=[39m env[33m.[39misProduction[0m
+
+      at errorHandler (src/middlewares/error.middleware.ts:16:13)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:71:5)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at next (node_modules/express/lib/router/index.js:280:10)
+      at Layer.handle_error (node_modules/express/lib/router/layer.js:67:12)
+      at trim_prefix (node_modules/express/lib/router/index.js:326:13)
+      at node_modules/express/lib/router/index.js:286:9
+      at Function.process_params (node_modules/express/lib/router/index.js:346:12)
+      at Immediate.next (node_modules/express/lib/router/index.js:280:10)
+      at Immediate._onImmediate (node_modules/express/lib/router/index.js:646:15)
+
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/pet/223e4567-e89b-12d3-a456-426614174001 HTTP/1.1" 200 93 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/ehr-not-found HTTP/1.1" 404 60 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "GET /api/v1/ehr/ehr-1 HTTP/1.1" 200 138 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "PUT /api/v1/ehr/ehr-1 HTTP/1.1" 200 112 "-" "-"
+::ffff:127.0.0.1 - - [29/Apr/2026:21:16:03 +0000] "DELETE /api/v1/ehr/ehr-1 HTTP/1.1" 200 81 "-" "-"
+A worker process has failed to exit gracefully and has been force exited. This is likely caused by tests leaking due 
+to improper teardown. Try running with --detectOpenHandles to find leaks. Active timers can also cause this, ensure 
+that .unref() was called on them.
+----------------------------|---------|----------|---------|---------|--------------------------------------------------------------------
+File                        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                  
+----------------------------|---------|----------|---------|---------|--------------------------------------------------------------------
+All files                   |   30.36 |    15.72 |   26.86 |   32.47 |                                                                    
+ controllers                |   90.38 |       75 |   91.66 |   90.38 |                                                                    
+  audit.controller.ts       |     100 |      100 |     100 |     100 |                                                                    
+  ehr.controller.ts         |   94.73 |      100 |     100 |   94.73 | 47,87                                                              
+  pdf.controller.ts         |     100 |       75 |     100 |     100 | 27-30                                                              
+  permission.controller.ts  |   66.66 |      100 |   66.66 |   66.66 | 36-43,63                                                           
+  vaccination.controller.ts |     100 |       75 |     100 |     100 | 20-39                                                              
+ services                   |   17.32 |    12.44 |   12.72 |   18.82 |                                                                    
+  audit.service.ts          |   13.79 |        0 |       0 |   14.81 | 15-28,37-72                                                        
+  ehr.service.ts            |   70.65 |    62.79 |     100 |   71.42 | 44,71,79-82,97,101,113,169,175,186-189,227-246,273,278,282,312,316 
+  pdf.service.ts            |    2.59 |        0 |       0 |    2.98 | 20-166,178-443                                                     
+  permission.service.ts     |       8 |        0 |       0 |       8 | 17-50,70-184                                                       
+  vaccination.service.ts    |    5.19 |        0 |       0 |    5.55 | 17-31,47-232                                                       
+----------------------------|---------|----------|---------|---------|--------------------------------------------------------------------
+
+Test Suites: 1 failed, 4 passed, 5 total
+Tests:       1 failed, 21 passed, 22 total
+Snapshots:   0 total
+Time:        5.231 s
+Ran all test suites matching tests/integration.

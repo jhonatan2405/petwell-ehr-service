@@ -1,0 +1,75 @@
+================================================================================
+REPORTE DE PRUEBAS AUTOMATIZADAS - PETWELL EHR SERVICE
+================================================================================
+
+1. INTRODUCCIÓN
+--------------------------------------------------------------------------------
+Este reporte documenta la implementación de pruebas automatizadas para el microservicio de Electronic Health Records (EHR) de PetWell. El objetivo principal ha sido asegurar el correcto funcionamiento de las operaciones CRUD de los registros médicos (creación, lectura, actualización y eliminación) mediante Jest y Supertest, alcanzando un nivel de cobertura de código óptimo sin modificar la lógica de negocio existente en el código de producción.
+
+2. PRUEBAS UNITARIAS (Unit Tests)
+--------------------------------------------------------------------------------
+Se han implementado más de 6 pruebas unitarias para validar de forma aislada la capa de servicio (`ehr.service.ts`). Estas pruebas garantizan que la lógica de negocio y las reglas de validación operen correctamente.
+
+¿Qué se validó?
+- Que solo roles permitidos (`CLINIC_ADMIN`, `VETERINARIO`) puedan crear, modificar o eliminar registros.
+- Que se extraiga y valide correctamente el `clinic_id` desde el token JWT.
+- Que se interactúe con el microservicio de Mascotas (Pet Service) correctamente y se manejen sus errores (404, 403, 500).
+- Que un dueño (`DUENO_MASCOTA`) solo pueda visualizar el historial de las mascotas que le pertenecen.
+
+3. PRUEBAS DE INTEGRACIÓN (Integration Tests)
+--------------------------------------------------------------------------------
+Se han implementado más de 6 pruebas de integración utilizando `supertest` para validar los endpoints expuestos en el controlador (`ehr.controller.ts`), simulando peticiones HTTP reales a la API sin levantar el servidor en un puerto ocupado.
+
+¿Qué endpoints se probaron?
+- POST /api/v1/ehr: Creación de registros y rechazo por falta de token (401) o falta de permisos (403).
+- GET /api/v1/ehr/pet/:petId: Obtención del historial clínico validando permisos de dueños y clínicas.
+- GET /api/v1/ehr/:id: Obtención de un registro específico manejando el caso de no encontrado (404).
+- PUT /api/v1/ehr/:id: Actualización exitosa.
+- DELETE /api/v1/ehr/:id: Eliminación exitosa.
+
+4. USO DE MOCKS
+--------------------------------------------------------------------------------
+Para garantizar que las pruebas sean rápidas, deterministas y no afecten el entorno real, se simularon (mockearon) los siguientes componentes:
+- Repositorios de base de datos (`ehr.repository.ts`, `permission.repository.ts`): Se simuló su comportamiento con `jest.mock()` para devolver datos ficticios en lugar de conectarse a PostgreSQL/Supabase.
+- Servicios Externos (`global.fetch`): Se interceptaron las llamadas HTTP hacia el microservicio de mascotas para simular escenarios de éxito (200) y de error (404, 403, 500) sin depender de la red.
+
+5. USO DE MATCHERS
+--------------------------------------------------------------------------------
+Los matchers de Jest nos permiten comprobar que los resultados obtenidos son los esperados. Se utilizaron los siguientes:
+- `toBe`: Para verificar igualdades exactas, como códigos de estado HTTP (`expect(res.status).toBe(200)`).
+- `toEqual`: Para verificar la igualdad del contenido de objetos y arrays de forma profunda.
+- `toHaveProperty`: Para comprobar si un objeto devuelto tiene un atributo en específico y un valor determinado (e.g., `toHaveProperty('id', 'ehr-1')`).
+- `toBeDefined`: Para comprobar que un valor o variable no sea `undefined` (útil al verificar si se crea un registro en el servicio).
+
+6. PRUEBAS ASÍNCRONAS
+--------------------------------------------------------------------------------
+Dado que Node.js es asíncrono y las bases de datos requieren promesas, nuestras pruebas utilizan `async / await` en todas las interacciones de servicio y endpoints.
+Se emplearon `rejects.toThrow()` para validar que promesas asíncronas arrojen los errores esperados (escenarios de fallos) y se probó que otras se resuelvan correctamente.
+
+7. COBERTURA DE CÓDIGO (Coverage)
+--------------------------------------------------------------------------------
+El objetivo principal fue superar el 80% de cobertura de código en el controlador y el servicio principal.
+Para entender los resultados:
+- Statements (Sentencias): Porcentaje de instrucciones individuales ejecutadas.
+- Branches (Ramas): Porcentaje de caminos posibles ejecutados (e.g., el `if` y el `else`).
+- Functions (Funciones): Porcentaje de funciones invocadas durante los tests.
+- Lines (Líneas): Porcentaje de líneas de código visitadas.
+
+8. REPORTE HTML DE RESULTADOS
+--------------------------------------------------------------------------------
+El reporte detallado y visual se ha generado automáticamente en la carpeta `coverage`.
+Para verlo, solo debes abrir el archivo:
+- `coverage/lcov-report/index.html` en tu navegador web.
+
+Cómo interpretar los colores en el HTML:
+- Verde: El bloque de código fue ejecutado por las pruebas.
+- Rojo: La línea o bloque no fue ejecutado (faltan tests para ese escenario).
+- Amarillo: La instrucción se evaluó parcialmente (común en condiciones `if` sin probar todos los casos lógicos).
+
+Para ejecutar los tests en tu computadora, utiliza:
+- `npm run test` (Solo para ejecutar los tests)
+- `npm run test:coverage` (Para ejecutar los tests y actualizar el HTML de coverage)
+
+9. CONCLUSIÓN
+--------------------------------------------------------------------------------
+El testing es un pilar fundamental en microservicios, especialmente en software crítico como la gestión de historiales médicos (EHR). Gracias a estas pruebas, cualquier desarrollador podrá agregar futuras funcionalidades con la confianza de que no ha roto reglas vitales (como que un dueño no pueda ver el historial médico de otra mascota). Todo esto garantiza la privacidad, seguridad y escalabilidad de la plataforma PetWell.
