@@ -33,7 +33,7 @@ const metricsMiddleware = promBundle({
   includeUp: true,
   promClient: { collectDefaultMetrics: {} },
 });
-app.use(metricsMiddleware);
+app.use(metricsMiddleware as any);
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/v1', router);
