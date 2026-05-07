@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import promBundle from 'express-prom-bundle';
 
 import { env } from './config/env';
 import router from './routes/index';
@@ -23,6 +24,16 @@ app.use(
 app.use(express.json({ limit: '10kb' }));   // Parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(env.isDevelopment ? 'dev' : 'combined'));  // HTTP request logging
+
+// ── Prometheus Metrics ────────────────────────────────────────────────────────
+const metricsMiddleware = promBundle({
+  includeMethod: true,
+  includePath: true,
+  includeStatusCode: true,
+  includeUp: true,
+  promClient: { collectDefaultMetrics: {} },
+});
+app.use(metricsMiddleware);
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/v1', router);
