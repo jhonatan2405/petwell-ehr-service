@@ -85,8 +85,33 @@ async function fetchImageBuffer(url: string | null): Promise<Buffer | null> {
     try {
         const res = await fetch(url);
         if (!res.ok) return null;
-        return Buffer.from(await res.arrayBuffer());
-    } catch {
+
+        // Check Content-Type — PDFKit natively supports only JPEG and PNG
+        const contentType = res.headers.get('content-type') ?? '';
+        const isImage = contentType.startsWith('image/jpeg')
+                     || contentType.startsWith('image/png')
+                     || contentType.startsWith('image/jpg');
+
+        if (!isImage) {
+            console.warn(`[PDF] Unsupported image Content-Type for ${url}: ${contentType} — skipping`);
+            return null;
+        }
+
+        const buf = Buffer.from(await res.arrayBuffer());
+
+        // Double-check magic bytes in case Content-Type header is wrong
+        // PNG: 89 50 4E 47  |  JPEG: FF D8 FF
+        const isPNG  = buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47;
+        const isJPEG = buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF;
+
+        if (!isPNG && !isJPEG) {
+            console.warn(`[PDF] Invalid image magic bytes for ${url} — skipping (format not JPEG/PNG)`);
+            return null;
+        }
+
+        return buf;
+    } catch (e) {
+        console.warn(`[PDF] fetchImageBuffer error for ${url}:`, e);
         return null;
     }
 }
